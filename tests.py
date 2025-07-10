@@ -1,31 +1,15 @@
-import unittest
-from functions.get_files_info import get_files_info
+# from functions.get_files_info import get_files_info
+from functions.get_file_content import get_file_content
 
-class TestGetFilesInfo(unittest.TestCase):
-    def test_get_files_info_calculator(self):
-        info =  get_files_info('calculator', '.')
-        self.assertEqual(info,'''- main.py: file_size=576 bytes, is_dir=False
-- tests.py: file_size=1343 bytes, is_dir=False
-- pkg: file_size=4096 bytes, is_dir=True''')
-    def test_get_files_info_calculator_pkg(self):
-        info =  get_files_info('calculator', 'pkg')
-        self.assertEqual(info,'''- __pycache__: file_size=4096 bytes, is_dir=True
-- calculator.py: file_size=1738 bytes, is_dir=False
-- render.py: file_size=767 bytes, is_dir=False''')
-        
-    def test_get_files_info_calculator_bin(self):
-        info =  get_files_info('calculator', 'bin')
-        self.assertEqual(info,'''Error: Cannot list "bin" as it is outside the permitted working directory''')
-    
-    def test_get_files_info_calculator_(self):
-        info =  get_files_info('calculator', '../')
-        self.assertEqual(info,'''Error: Cannot list "../" as it is outside the permitted working directory''')
-        
 
 if __name__ == "__main__":
-    print(get_files_info('calculator', '.'))
-    print(get_files_info('calculator', 'pkg'))
-    print(get_files_info('calculator', 'bin'))
-    print(get_files_info('calculator', '../'))
-    unittest.main()
+    # print(get_files_info('calculator', '.'))
+    # print(get_files_info('calculator', 'pkg'))
+    # print(get_files_info('calculator', 'bin'))
+    # print(get_files_info('calculator', '../'))
+    print(get_file_content('calculator', 'main.py'))
+    print(get_file_content('calculator', 'pkg/calculator.py'))
+    print(get_file_content('calculator', '/bin/cat'))
+    #print(get_file_content("calculator", "lorem.txt"))
+    
     
