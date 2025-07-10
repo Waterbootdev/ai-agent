@@ -1,5 +1,6 @@
 from pathlib import Path
-from functions.get_path import get_path
+from functions.function_helpers import get_path
+from functions.function_helpers import outside_working_directory_error
 import os
 
 def get_file_info(path: Path, name: str) -> str:
@@ -13,7 +14,7 @@ def get_files_info(working_directory:str, directory: str|None=None) -> str:
     path, inside_working_directory = get_path(working_directory, directory)
 
     if (not inside_working_directory or not path.exists())   :
-        return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
+        return outside_working_directory_error(directory, 'list')
     
     if not path.is_dir():
         return f'Error: "{directory}" is not a directory'

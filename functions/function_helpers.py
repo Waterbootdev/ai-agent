@@ -12,3 +12,5 @@ def get_path(working_directory : str, other : str) -> Tuple[Path, bool]:
     return path,inside_working_directory
     
 
+def outside_working_directory_error(path: str, action: str) -> str:
+    return f'Error: Cannot {action} "{path}" as it is outside the permitted working directory'
