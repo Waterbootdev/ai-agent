@@ -1,4 +1,5 @@
 from pathlib import Path
+from functions.get_path import get_path
 import os
 
 def get_file_info(path: Path, name: str) -> str:
@@ -9,11 +10,7 @@ def get_files_info(working_directory:str, directory: str|None=None) -> str:
     if directory is None:
         return f'Error: "{directory}" is not a directory'
     
-    working_directory_path : Path = Path(working_directory).absolute()
-
-    path : Path = working_directory_path.joinpath(directory).resolve()
-
-    inside_working_directory = str(path).startswith(str(working_directory_path))
+    path, inside_working_directory = get_path(working_directory, directory)
 
     if (not inside_working_directory or not path.exists())   :
         return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
