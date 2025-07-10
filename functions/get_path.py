@@ -1,7 +1,8 @@
 
 from pathlib import Path
+from typing import Tuple
 
-def get_path(working_directory : str, other : str):
+def get_path(working_directory : str, other : str) -> Tuple[Path, bool]:
     working_directory_path : Path = Path(working_directory).absolute()
 
     path : Path = working_directory_path.joinpath(other).resolve()
