@@ -68,8 +68,8 @@ def main():
                         raise Exception()
 
                     if verbose:
-                        for kk, kkk in part.function_response.response.items(): 
-                            print(f"-> {kk} : {kkk}")
+                        for key, value in part.function_response.response.items(): 
+                            print(f"-> {key} : {value}")
                             
 
                     function_responses.append(part)
