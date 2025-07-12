@@ -43,7 +43,7 @@ def run_python_file(working_directory: str, file_path: str) -> str:
         return error
     
     try:    
-        completed  = subprocess.run(args=['uv', 'run', file_path], timeout=TIMEOUT, capture_output=True, text=True, cwd=working_directory, check=True)    
+        completed  = subprocess.run(args=['uv', 'run', file_path], timeout=TIMEOUT, capture_output=True, text=True, cwd=working_directory)    
     except Exception as e:
         return f"Error: executing Python file: {e}"
 
