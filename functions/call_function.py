@@ -1,36 +1,47 @@
 from google.genai.types import FunctionCall, Content, Part
 from functions.config import WORKING_DIRECTORY
 from functions.function_calls import available_functions
-from typing import List 
+from typing import List
 
-def call_function(function_call_part: FunctionCall, verbose: bool=False) -> Content:
+
+def call_function(function_call_part: FunctionCall, verbose: bool = False) -> Content:
     print_calling_function(function_call_part, verbose)
     return get_response_for_function_call(function_call_part)
+
 
 def get_response_for_function_call(function_call_part: FunctionCall):
     function_name = function_call_part.name
     function_args = function_call_part.args
 
     assert function_name is not None
- 
-    if function_name not in  available_functions:
-        return Content(role="tool", parts=[Part.from_function_response(name=function_name, response={"error": f"Unknown function: {function_name}"},)])
+
+    if function_name not in available_functions:
+        return Content(
+            role="tool",
+            parts=[
+                Part.from_function_response(
+                    name=function_name,
+                    response={"error": f"Unknown function: {function_name}"},
+                )
+            ],
+        )
 
     assert function_args is not None
 
-    function_args['working_directory'] = WORKING_DIRECTORY
+    function_args["working_directory"] = WORKING_DIRECTORY
 
-    function_result : str = available_functions[function_name](**function_args)
+    function_result: str = available_functions[function_name](**function_args)
 
     return Content(
-    role="tool",
-    parts=[
-        Part.from_function_response(
-            name=function_name,
-            response={"result": function_result},
-        )
-    ],
-)
+        role="tool",
+        parts=[
+            Part.from_function_response(
+                name=function_name,
+                response={"result": function_result},
+            )
+        ],
+    )
+
 
 def print_calling_function(function_call_part: FunctionCall, verbose: bool):
     if verbose:
@@ -39,9 +50,8 @@ def print_calling_function(function_call_part: FunctionCall, verbose: bool):
         print(f" - Calling function: {function_call_part.name}")
 
 
-def call_functions(verbose: bool, function_calls: List[FunctionCall]) -> List[Part] :
-    
-    function_responses : List[Part] = []
+def call_functions(verbose: bool, function_calls: List[FunctionCall]) -> List[Part]:
+    function_responses: List[Part] = []
 
     for function_call_part in function_calls:
         content = call_function(function_call_part, verbose)
@@ -55,9 +65,9 @@ def call_functions(verbose: bool, function_calls: List[FunctionCall]) -> List[Pa
             raise Exception()
 
         if verbose:
-            for key, value in part.function_response.response.items(): 
+            for key, value in part.function_response.response.items():
                 print(f"-> {key} : {value}")
-                            
+
         function_responses.append(part)
-    
+
     return function_responses

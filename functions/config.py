@@ -1,5 +1,4 @@
 MAX_NUMBER_CHARS: int = 10000
-TIMEOUT: int  = 30
-WORKING_DIRECTORY: str = './calculator'
+TIMEOUT: int = 30
+WORKING_DIRECTORY: str = "./calculator"
 MAX_NUMBER_ITERATIONS: int = 1
-
