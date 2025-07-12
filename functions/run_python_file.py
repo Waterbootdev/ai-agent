@@ -15,7 +15,7 @@ def validate_path(working_directory: str, file_path: str):
     if not path.exists():
         return f'Error: File "{file_path}" not found.'
     
-    if not path.suffix == '.py':
+    if path.suffix != '.py':
         return f'Error: "{file_path}" is not a Python file.'
     
     return None

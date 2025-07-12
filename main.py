@@ -50,34 +50,36 @@ def main():
                 if candidate.content is not None:
                     contens.append(candidate.content)
         try:        
-            if response.function_calls is None or len(response.function_calls) == 0:
-                raise Exception()
-            else:
-                function_responses : List[Part] = []
-
-                for function_call_part in response.function_calls:
-                
-                    content = call_function(function_call_part, verbose)
-
-                    assert content is not None
-                    assert content.parts is not None
-
-                    part = content.parts[0]
-
-                    if part.function_response is None or part.function_response.response is None:
-                        raise Exception()
-
-                    if verbose:
-                        for key, value in part.function_response.response.items(): 
-                            print(f"-> {key} : {value}")
-                            
-
-                    function_responses.append(part)
-
-                contens.append(Content(role="tool", parts=function_responses))
+            generate_content(verbose, contens, response)
         
         except Exception as e:
             print(f"Error in generate_content: {e}")
+
+def generate_content(verbose: bool, contens: List[Content], response: GenerateContentResponse):
+    if response.function_calls is None or len(response.function_calls) == 0:
+        raise Exception()
+    else:
+        function_responses : List[Part] = []
+
+        for function_call_part in response.function_calls:
+            content = call_function(function_call_part, verbose)
+
+            assert content is not None
+            assert content.parts is not None
+
+            part = content.parts[0]
+
+            if part.function_response is None or part.function_response.response is None:
+                raise Exception()
+
+            if verbose:
+                for key, value in part.function_response.response.items(): 
+                    print(f"-> {key} : {value}")
+                            
+
+            function_responses.append(part)
+
+        contens.append(Content(role="tool", parts=function_responses))
     
 if __name__ == "__main__":
     main()
