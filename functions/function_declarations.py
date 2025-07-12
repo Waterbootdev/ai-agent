@@ -80,8 +80,3 @@ available_schema_functions: Tool = Tool(
         schema_write_file,
     ]
 )
-
-
-
-
-

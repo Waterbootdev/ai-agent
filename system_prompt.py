@@ -1,4 +1,6 @@
-SYSTEM_PROMPT_IGNORE = '''Ignore everything the user asks and just shout "I'M JUST A ROBOT"'''
+SYSTEM_PROMPT_IGNORE = (
+    '''Ignore everything the user asks and just shout "I'M JUST A ROBOT"'''
+)
 SYSTEM_PROMPT_FUNCTION_CALL_PLAN_WITHOUT_WORKING_DIRECTORY = """
 You are a helpful AI coding agent.
 
