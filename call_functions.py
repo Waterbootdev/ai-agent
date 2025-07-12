@@ -1,9 +1,9 @@
 from functions.call_function import call_function, FunctionCall, Part
 from typing import List
 
-def call_functions(verbose: bool, function_calls: List[FunctionCall]) -> List[Part] :
-    
-    function_responses : List[Part] = []
+
+def call_functions(verbose: bool, function_calls: List[FunctionCall]) -> List[Part]:
+    function_responses: List[Part] = []
 
     for function_call_part in function_calls:
         content = call_function(function_call_part, verbose)
@@ -17,9 +17,9 @@ def call_functions(verbose: bool, function_calls: List[FunctionCall]) -> List[Pa
             raise Exception()
 
         if verbose:
-            for key, value in part.function_response.response.items(): 
+            for key, value in part.function_response.response.items():
                 print(f"-> {key} : {value}")
-                            
+
         function_responses.append(part)
-    
+
     return function_responses
