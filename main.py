@@ -49,12 +49,12 @@ def main():
              for candidate in response.candidates:
                 if candidate.content is not None:
                     contens.append(candidate.content)
-        try:        
-            if response.function_calls is None or len(response.function_calls) == 0:
-                raise Exception()
-            else:
-                contens.append(Content(role="tool", parts=call_functions(verbose, response.function_calls)))
-                        
+        
+        if response.function_calls is None or len(response.function_calls) == 0:
+            raise Exception("Error: no text and no function calls found")
+        
+        try:
+            contens.append(Content(role="tool", parts=call_functions(verbose, response.function_calls)))
         except Exception as e:
             print(f"Error in generate_content: {e}")
 
@@ -78,7 +78,6 @@ def call_functions(verbose: bool, function_calls: List[FunctionCall]) -> List[Pa
             for key, value in part.function_response.response.items(): 
                 print(f"-> {key} : {value}")
                             
-
         function_responses.append(part)
     
     return function_responses
