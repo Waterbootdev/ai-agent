@@ -1,31 +1,24 @@
-from google import genai 
-from google.genai.types import GenerateContentResponse, Content, GenerateContentConfig, FunctionCall
-from typing import List 
-from functions.call_function import call_functions
 from functions.config import MAX_NUMBER_ITERATIONS
-
+from call_functions import call_functions, FunctionCall, List
+from google import genai 
+from google.genai.types import GenerateContentResponse, Content, GenerateContentConfig
 
 def response_function_calls_loop(verbose: bool, contens: List[Content], model: str, client: genai.Client, config: GenerateContentConfig):
-    for i in range(MAX_NUMBER_ITERATIONS):
+    for index in range(MAX_NUMBER_ITERATIONS):
         response : GenerateContentResponse = client.models.generate_content(model=model, contents=contens, config=config) # type: ignore
-
-        print_response_stats(verbose, i, response)
+        print_response_stats(verbose, index, response)
 
         if response.text is not None:
             print(response.text)
             break
     
         function_calls = get_function_calls_or_raise_exception(response)
-
         append_candidates(contens, response)
-
         append_function_calls(verbose, contens, function_calls)
-
 
 def get_function_calls_or_raise_exception(response: GenerateContentResponse) -> List[FunctionCall]:
     if response.function_calls is None or len(response.function_calls) == 0:
         raise Exception("Error: no text and no function calls found")
-
     return response.function_calls
         
 def append_function_calls(verbose: bool , contens: List[Content], function_calls: List[FunctionCall]):
