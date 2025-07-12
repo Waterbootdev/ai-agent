@@ -1,10 +1,10 @@
 from google.genai.types import FunctionCall, Content, Part
 from functions.config import WORKING_DIRECTORY
 from functions.function_calls import available_functions
+from typing import List 
 
 def call_function(function_call_part: FunctionCall, verbose: bool=False) -> Content:
     print_calling_function(function_call_part, verbose)
-
     return get_response_for_function_call(function_call_part)
 
 def get_response_for_function_call(function_call_part: FunctionCall):
@@ -32,11 +32,6 @@ def get_response_for_function_call(function_call_part: FunctionCall):
     ],
 )
 
-
-
-
-
-
 def print_calling_function(function_call_part: FunctionCall, verbose: bool):
     if verbose:
         print(f"Calling function: {function_call_part.name}({function_call_part.args})")
@@ -44,3 +39,25 @@ def print_calling_function(function_call_part: FunctionCall, verbose: bool):
         print(f" - Calling function: {function_call_part.name}")
 
 
+def call_functions(verbose: bool, function_calls: List[FunctionCall]) -> List[Part] :
+    
+    function_responses : List[Part] = []
+
+    for function_call_part in function_calls:
+        content = call_function(function_call_part, verbose)
+
+        assert content is not None
+        assert content.parts is not None
+
+        part = content.parts[0]
+
+        if part.function_response is None or part.function_response.response is None:
+            raise Exception()
+
+        if verbose:
+            for key, value in part.function_response.response.items(): 
+                print(f"-> {key} : {value}")
+                            
+        function_responses.append(part)
+    
+    return function_responses
