@@ -2,7 +2,7 @@ import os
 import sys
 from dotenv import load_dotenv
 from google import genai 
-from google.genai.types import GenerateContentResponse, Content, Part, GenerateContentConfig
+from google.genai.types import GenerateContentResponse, Content, Part, GenerateContentConfig, FunctionCall
 from system_prompt import SYSTEM_PROMPT_FUNCTION_CALL_PLAN_WITHOUT_WORKING_DIRECTORY as SYSTEM_PROMPT
 from functions.function_declarations import available_schema_functions
 from typing import List 
@@ -50,36 +50,38 @@ def main():
                 if candidate.content is not None:
                     contens.append(candidate.content)
         try:        
-            generate_content(verbose, contens, response)
-        
+            if response.function_calls is None or len(response.function_calls) == 0:
+                raise Exception()
+            else:
+                contens.append(Content(role="tool", parts=call_functions(verbose, response.function_calls)))
+                        
         except Exception as e:
             print(f"Error in generate_content: {e}")
 
-def generate_content(verbose: bool, contens: List[Content], response: GenerateContentResponse):
-    if response.function_calls is None or len(response.function_calls) == 0:
-        raise Exception()
-    else:
-        function_responses : List[Part] = []
+    
+def call_functions(verbose: bool, function_calls: List[FunctionCall]) -> List[Part] :
+    
+    function_responses : List[Part] = []
 
-        for function_call_part in response.function_calls:
-            content = call_function(function_call_part, verbose)
+    for function_call_part in function_calls:
+        content = call_function(function_call_part, verbose)
 
-            assert content is not None
-            assert content.parts is not None
+        assert content is not None
+        assert content.parts is not None
 
-            part = content.parts[0]
+        part = content.parts[0]
 
-            if part.function_response is None or part.function_response.response is None:
-                raise Exception()
+        if part.function_response is None or part.function_response.response is None:
+            raise Exception()
 
-            if verbose:
-                for key, value in part.function_response.response.items(): 
-                    print(f"-> {key} : {value}")
+        if verbose:
+            for key, value in part.function_response.response.items(): 
+                print(f"-> {key} : {value}")
                             
 
-            function_responses.append(part)
-
-        contens.append(Content(role="tool", parts=function_responses))
+        function_responses.append(part)
+    
+    return function_responses
     
 if __name__ == "__main__":
     main()
